@@ -2,20 +2,23 @@ import { Button, Form, Input } from 'antd'
 import { ValidateErrorEntity } from 'rc-field-form/lib/interface'
 import { useState } from 'react'
 
-interface ISignInForm {
+interface ISignUpForm {
   email: string
   password: string
+  confirmPassword: string
 }
-const SignInForm = () => {
+const SignUpForm = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
 
-  const onFinish = (values: ISignInForm) => {
+  const onFinish = (values: ISignUpForm) => {
     console.log('Success:', values)
     setEmail(values.email)
     setPassword(values.password)
+    setConfirmPassword(values.confirmPassword)
   }
-  const onFinishFailed = (errorInfo: ValidateErrorEntity<ISignInForm>) => {
+  const onFinishFailed = (errorInfo: ValidateErrorEntity<ISignUpForm>) => {
     console.log('Failed:', errorInfo)
   }
 
@@ -56,13 +59,26 @@ const SignInForm = () => {
         <Input.Password autoComplete="on" />
       </Form.Item>
 
+      <Form.Item
+        label="Confirm password"
+        name="confirmPassword"
+        rules={[
+          {
+            required: true,
+            message: 'Please confirm your password!',
+          },
+        ]}
+      >
+        <Input.Password autoComplete="on" />
+      </Form.Item>
+
       <Form.Item>
         <Button type="primary" htmlType="submit" block>
-          Sign in
+          Sign up
         </Button>
       </Form.Item>
     </Form>
   )
 }
 
-export { SignInForm }
+export { SignUpForm }
