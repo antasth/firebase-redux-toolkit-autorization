@@ -2,6 +2,7 @@ import { useActions } from '@/hooks/useActions'
 import { App, Button, Form, Input } from 'antd'
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth'
 import { ValidateErrorEntity } from 'rc-field-form/lib/interface'
+import { useNavigate } from 'react-router-dom'
 
 interface ISignUpForm {
   email: string
@@ -15,6 +16,8 @@ const SignUpForm = () => {
 
   const { setUser } = useActions()
 
+  const navigate = useNavigate()
+
   const onFinish = (values: ISignUpForm) => {
     console.log('Success:', values)
     const { email, password } = values
@@ -25,6 +28,7 @@ const SignUpForm = () => {
         user.getIdToken().then((accessToken) => {
           setUser({ email: user.email, id: user.uid, token: accessToken })
         })
+        navigate('/')
       })
       .catch((error) => {
         notification.error({ message: error.message })
