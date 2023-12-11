@@ -1,18 +1,26 @@
 import { useActions } from '@/hooks/useActions'
 import { useAuth } from '@/hooks/useAuth'
-import { getAuth, onAuthStateChanged } from 'firebase/auth'
+import { notification } from 'antd'
+import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth'
 import { Navigate } from 'react-router-dom'
 
 const Home = () => {
   const { isAuth } = useAuth()
+  const auth = getAuth()
 
   const { removeUser } = useActions()
 
   const handleLogout = () => {
-    removeUser()
+    signOut(auth)
+      .then(() => {
+        removeUser()
+        console.log('sign out success')
+      })
+      .catch((error) => {
+        notification.error({ message: error.message })
+      })
   }
 
-  const auth = getAuth()
   onAuthStateChanged(auth, (user) => {
     if (user) {
       console.log('signed in')
