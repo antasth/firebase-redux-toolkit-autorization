@@ -1,4 +1,4 @@
-import { Button, Form, Input } from 'antd'
+import { App, Button, Form, Input } from 'antd'
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth'
 import { ValidateErrorEntity } from 'rc-field-form/lib/interface'
 
@@ -10,6 +10,8 @@ interface ISignUpForm {
 const SignUpForm = () => {
   const auth = getAuth()
 
+  const { notification } = App.useApp()
+
   const onFinish = (values: ISignUpForm) => {
     console.log('Success:', values)
     const { email, password } = values
@@ -19,9 +21,7 @@ const SignUpForm = () => {
         console.log(user)
       })
       .catch((error) => {
-        const errorCode = error.code
-        const errorMessage = error.message
-        console.log(errorCode, errorMessage)
+        notification.error({ message: error.message })
       })
   }
   const onFinishFailed = (errorInfo: ValidateErrorEntity<ISignUpForm>) => {
