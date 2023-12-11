@@ -1,5 +1,6 @@
 import { useActions } from '@/hooks/useActions'
 import { useAuth } from '@/hooks/useAuth'
+import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import { Navigate } from 'react-router-dom'
 
 const Home = () => {
@@ -10,6 +11,15 @@ const Home = () => {
   const handleLogout = () => {
     removeUser()
   }
+
+  const auth = getAuth()
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      console.log('signed in')
+    } else {
+      console.log('signed out')
+    }
+  })
 
   return isAuth ? (
     <div>
