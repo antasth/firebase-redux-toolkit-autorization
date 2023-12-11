@@ -13,7 +13,7 @@ const Home = () => {
 
   return isAuth ? (
     <div>
-      <h1>Wellcome</h1>
+      <h1>Welcome</h1>
       <button onClick={handleLogout}>Logout</button>
     </div>
   ) : (

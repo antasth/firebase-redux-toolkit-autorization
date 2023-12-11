@@ -1,6 +1,8 @@
+import { useActions } from '@/hooks/useActions'
 import { App, Button, Form, Input } from 'antd'
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
 import { ValidateErrorEntity } from 'rc-field-form/lib/interface'
+import { useNavigate } from 'react-router-dom'
 
 interface ISignInForm {
   email: string
@@ -11,13 +13,24 @@ const SignInForm = () => {
 
   const { notification } = App.useApp()
 
+  const { setUser } = useActions()
+
+  const navigate = useNavigate()
+
   const onFinish = (values: ISignInForm) => {
     console.log('Success:', values)
 
     const { email, password } = values
     console.log(email, password)
     signInWithEmailAndPassword(auth, email, password)
-      .then(console.log)
+      .then((userCredential) => {
+        const user = userCredential.user
+        console.log(user)
+        user.getIdToken().then((accessToken) => {
+          setUser({ email: user.email, id: user.uid, token: accessToken })
+        })
+        navigate('/')
+      })
       .catch((error) => {
         notification.error({ message: error.message })
       })
