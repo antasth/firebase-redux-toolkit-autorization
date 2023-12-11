@@ -1,3 +1,4 @@
+import { useActions } from '@/hooks/useActions'
 import { App, Button, Form, Input } from 'antd'
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth'
 import { ValidateErrorEntity } from 'rc-field-form/lib/interface'
@@ -12,6 +13,8 @@ const SignUpForm = () => {
 
   const { notification } = App.useApp()
 
+  const { setUser } = useActions()
+
   const onFinish = (values: ISignUpForm) => {
     console.log('Success:', values)
     const { email, password } = values
@@ -19,6 +22,9 @@ const SignUpForm = () => {
       .then((userCredential) => {
         const user = userCredential.user
         console.log(user)
+        user.getIdToken().then((accessToken) => {
+          setUser({ email: user.email, id: user.uid, token: accessToken })
+        })
       })
       .catch((error) => {
         notification.error({ message: error.message })
