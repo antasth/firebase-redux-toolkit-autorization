@@ -1,6 +1,6 @@
 import { Button, Form, Input } from 'antd'
+import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth'
 import { ValidateErrorEntity } from 'rc-field-form/lib/interface'
-import { useState } from 'react'
 
 interface ISignUpForm {
   email: string
@@ -8,15 +8,21 @@ interface ISignUpForm {
   confirmPassword: string
 }
 const SignUpForm = () => {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
+  const auth = getAuth()
 
   const onFinish = (values: ISignUpForm) => {
     console.log('Success:', values)
-    setEmail(values.email)
-    setPassword(values.password)
-    setConfirmPassword(values.confirmPassword)
+    const { email, password } = values
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        const user = userCredential.user
+        console.log(user)
+      })
+      .catch((error) => {
+        const errorCode = error.code
+        const errorMessage = error.message
+        console.log(errorCode, errorMessage)
+      })
   }
   const onFinishFailed = (errorInfo: ValidateErrorEntity<ISignUpForm>) => {
     console.log('Failed:', errorInfo)
@@ -34,12 +40,12 @@ const SignUpForm = () => {
       autoComplete="off"
     >
       <Form.Item
-        label="Username"
-        name="username"
+        label="Email"
+        name="email"
         rules={[
           {
             required: true,
-            message: 'Please input your username!',
+            message: 'Please input your email!',
           },
         ]}
       >

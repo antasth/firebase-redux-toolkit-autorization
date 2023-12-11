@@ -1,19 +1,22 @@
 import { Button, Form, Input } from 'antd'
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
 import { ValidateErrorEntity } from 'rc-field-form/lib/interface'
-import { useState } from 'react'
 
 interface ISignInForm {
   email: string
   password: string
 }
 const SignInForm = () => {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const auth = getAuth()
 
   const onFinish = (values: ISignInForm) => {
     console.log('Success:', values)
-    setEmail(values.email)
-    setPassword(values.password)
+
+    const { email, password } = values
+    console.log(email, password)
+    signInWithEmailAndPassword(auth, email, password)
+      .then(console.log)
+      .catch(console.error)
   }
   const onFinishFailed = (errorInfo: ValidateErrorEntity<ISignInForm>) => {
     console.log('Failed:', errorInfo)
@@ -31,12 +34,12 @@ const SignInForm = () => {
       autoComplete="off"
     >
       <Form.Item
-        label="Username"
-        name="username"
+        label="Email"
+        name="email"
         rules={[
           {
             required: true,
-            message: 'Please input your username!',
+            message: 'Please input your email!',
           },
         ]}
       >
